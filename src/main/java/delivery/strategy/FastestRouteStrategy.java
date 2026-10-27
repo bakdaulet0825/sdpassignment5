@@ -1,43 +1,42 @@
-package com.delivery.strategy;
+package delivery.strategy;
 
-import com.delivery.exception.NoSuitableRouteException;
-import com.delivery.model.DeliveryRequest;
-import com.delivery.model.Route;
-import com.delivery.model.RouteDecision;
-import java.util.ArrayList;
+import delivery.exception.NoSuitableRouteException;
+import delivery.model.DeliveryRequest;
+import delivery.model.Route;
+import delivery.model.RouteDecision;
+
+import java.util.Comparator;
 import java.util.List;
 
 public class FastestRouteStrategy extends AbstractRouteStrategy {
 
     @Override
     public RouteDecision selectRoute(List<Route> routes, DeliveryRequest request) {
-        if (routes == null || routes.isEmpty()) {
-            throw new IllegalArgumentException("Route list cannot be null or empty.");
+        validateInput(routes, request);
+
+        List<Route> validRoutes = routes.stream()
+                .filter(Route::isAvailable)
+                .filter(r -> calculateTotalTime(r, request) <= request.maxAllowedTimeMinutes())
+                .filter(r -> r.cost() <= request.maxBudget())
+                .toList();
+
+        if (validRoutes.isEmpty()) {
+            throw new NoSuitableRouteException("No route matches the constraints for Fastest strategy.");
         }
 
-        List<String> rejectionLog = new ArrayList<>();
-        Route bestRoute = null;
-        int minTotalTime = Integer.MAX_VALUE;
+        Route bestRoute = validRoutes.stream()
+                .min(Comparator.comparingDouble(r -> calculateTotalTime(r, request)))
+                .orElseThrow();
 
-        for (Route route : routes) {
-            if (!satisfiesConstraints(route, request, rejectionLog)) {
-                continue;
-            }
-            int totalTime = route.estimatedMinutes() + route.trafficDelayMinutes();
-            if (totalTime < minTotalTime) {
-                minTotalTime = totalTime;
-                bestRoute = route;
-            }
-        }
+        double totalTime = calculateTotalTime(bestRoute, request);
+        String explanation = String.format("Selected Fastest Route %s. Base time: %d min, Traffic delay: +%d min, Total: %.0f min.",
+                bestRoute.id(), bestRoute.baseTimeMinutes(), bestRoute.trafficDelayMinutes(), totalTime);
 
-        if (bestRoute == null) {
-            throw new NoSuitableRouteException("No route satisfies the constraints for FastestRouteStrategy.");
-        }
+        return new RouteDecision(true, bestRoute, getStrategyName(), explanation);
+    }
 
-        String explanation = String.format("Selected Route %s. Base time: %d min, Traffic delay: +%d min, Total: %d min.",
-                bestRoute.id(), bestRoute.estimatedMinutes(), bestRoute.trafficDelayMinutes(), minTotalTime);
-
-        return new RouteDecision(bestRoute, getStrategyName(), true, explanation, rejectionLog);
+    private double calculateTotalTime(Route route, DeliveryRequest request) {
+        return route.baseTimeMinutes() + route.trafficDelayMinutes();
     }
 
     @Override

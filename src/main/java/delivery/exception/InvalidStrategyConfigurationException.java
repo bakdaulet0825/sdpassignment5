@@ -1,4 +1,4 @@
-package com.delivery.exception;
+package delivery.exception;
 
 public class InvalidStrategyConfigurationException extends RuntimeException {
     public InvalidStrategyConfigurationException(String message) {

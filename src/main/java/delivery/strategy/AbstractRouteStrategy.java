@@ -1,27 +1,39 @@
-package com.delivery.strategy;
+package delivery.strategy;
 
-import com.delivery.model.DeliveryRequest;
-import com.delivery.model.Route;
+import delivery.model.DeliveryRequest;
+import delivery.model.Route;
+
 import java.util.List;
 
 public abstract class AbstractRouteStrategy implements RouteStrategy {
 
-    protected boolean satisfiesConstraints(Route route, DeliveryRequest request, List<String> rejectionLog) {
+    protected void validateInput(List<Route> routes, DeliveryRequest request) {
+        if (routes == null) {
+            throw new IllegalArgumentException("Routes list cannot be null");
+        }
+        if (routes.isEmpty()) {
+            throw new IllegalArgumentException("Routes list cannot be empty");
+        }
+        if (request == null) {
+            throw new IllegalArgumentException("Delivery request cannot be null");
+        }
+    }
+
+    protected boolean satisfiesConstraints(Route route, DeliveryRequest request, List<String> failureReasons) {
         if (!route.isAvailable()) {
-            rejectionLog.add("Route " + route.id() + " rejected: Route is currently unavailable.");
+            failureReasons.add("Route " + route.id() + " is not available.");
             return false;
         }
         if (route.cost() > request.maxBudget()) {
-            rejectionLog.add("Route " + route.id() + " rejected: Cost (" + route.cost() + ") exceeds max budget (" + request.maxBudget() + ").");
+            failureReasons.add("Route " + route.id() + " exceeds budget limit.");
             return false;
         }
-        int totalTime = route.estimatedMinutes() + route.trafficDelayMinutes();
-        if (totalTime > request.maxDeliveryMinutes()) {
-            rejectionLog.add("Route " + route.id() + " rejected: Total time (" + totalTime + " min) exceeds deadline (" + request.maxDeliveryMinutes() + " min).");
+        if (route.estimatedMinutes() > request.maxAllowedTimeMinutes()) {
+            failureReasons.add("Route " + route.id() + " exceeds time limit.");
             return false;
         }
-        if (route.carbonEmission() > request.maxCarbonEmission()) {
-            rejectionLog.add("Route " + route.id() + " rejected: Emissions (" + route.carbonEmission() + " kg) exceed max allowed (" + request.maxCarbonEmission() + " kg).");
+        if (route.distanceKm() > request.maxDistanceKm()) {
+            failureReasons.add("Route " + route.id() + " exceeds distance limit.");
             return false;
         }
         return true;

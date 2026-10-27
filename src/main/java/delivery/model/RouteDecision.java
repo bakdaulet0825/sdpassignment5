@@ -1,11 +1,18 @@
-package com.delivery.model;
+package delivery.model;
 
 import java.util.List;
 
 public record RouteDecision(
-        Route selectedRoute,
-        String strategyName,
         boolean success,
-        String explanation,
-        List<String> rejectedRoutesLog
-) {}
+        Route selectedRoute,
+        String strategyUsed,
+        String explanation
+) {
+    public RouteDecision(Route selectedRoute, String strategyUsed, boolean success, String explanation, List<String> alternativeRouteIds) {
+        this(success, selectedRoute, strategyUsed, explanation);
+    }
+
+    public String strategyName() {
+        return strategyUsed;
+    }
+}

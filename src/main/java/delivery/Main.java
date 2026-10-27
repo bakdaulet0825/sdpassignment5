@@ -1,9 +1,9 @@
-package com.delivery;
+package delivery;
 
-import com.delivery.model.*;
-import com.delivery.planner.RoutePlanner;
-import com.delivery.selector.StrategySelector;
-import com.delivery.strategy.*;
+import delivery.model.*;
+import delivery.planner.RoutePlanner;
+import delivery.selector.StrategySelector;
+import delivery.strategy.*;
 
 import java.util.List;
 
@@ -42,7 +42,13 @@ public class Main {
         System.out.println(decision3.explanation());
 
         System.out.println("\n=== 2. AUTOMATIC STRATEGY SELECTION & COMPARISON MODE ===");
-        DeliveryRequest urgentRequest = new DeliveryRequest(DeliveryPriority.URGENT, 3000.0, 30, false, 5.0);
+        DeliveryRequest urgentRequest = new DeliveryRequest(
+                DeliveryPriority.URGENT,
+                10000.0,
+                120,
+                true,
+                50.0
+        );
         RouteStrategy autoStrategy = StrategySelector.selectStrategy(urgentRequest);
         planner.setStrategy(autoStrategy);
 

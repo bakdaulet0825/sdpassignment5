@@ -1,9 +1,9 @@
-package com.delivery.model;
+package delivery.model;
 
 public record DeliveryRequest(
         DeliveryPriority priority,
         double maxBudget,
-        int maxDeliveryMinutes,
+        int maxAllowedTimeMinutes,
         boolean ecoPreferred,
-        double maxCarbonEmission
+        double maxDistanceKm
 ) {}

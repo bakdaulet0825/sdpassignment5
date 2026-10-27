@@ -1,9 +1,9 @@
-package com.delivery.planner;
+package delivery.planner;
 
-import com.delivery.model.DeliveryRequest;
-import com.delivery.model.Route;
-import com.delivery.model.RouteDecision;
-import com.delivery.strategy.RouteStrategy;
+import delivery.model.DeliveryRequest;
+import delivery.model.Route;
+import delivery.model.RouteDecision;
+import delivery.strategy.RouteStrategy;
 import java.util.List;
 
 public class RoutePlanner {

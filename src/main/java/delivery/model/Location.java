@@ -1,4 +1,4 @@
-package com.delivery.model;
+package delivery.model;
 
 public record Location(
         String name,

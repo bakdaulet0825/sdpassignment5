@@ -1,14 +1,22 @@
-package com.delivery.model;
+package delivery.model;
 
 public record Route(
         String id,
-        Location origin,
-        Location destination,
+        Location startLocation,
+        Location endLocation,
         double distanceKm,
-        int estimatedMinutes,
+        int baseTimeMinutes,
         double cost,
-        double carbonEmission,
+        double emissionsKg,
         boolean isAvailable,
         int trafficDelayMinutes,
         double safetyIndex
-) {}
+) {
+    public int estimatedMinutes() {
+        return baseTimeMinutes + trafficDelayMinutes;
+    }
+
+    public double carbonEmission() {
+        return emissionsKg;
+    }
+}

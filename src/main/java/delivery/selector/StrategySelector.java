@@ -1,7 +1,7 @@
-package com.delivery.selector;
+package delivery.selector;
 
-import com.delivery.model.DeliveryRequest;
-import com.delivery.strategy.*;
+import delivery.model.DeliveryRequest;
+import delivery.strategy.*;
 
 public class StrategySelector {
 

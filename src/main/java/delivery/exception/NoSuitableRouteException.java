@@ -1,4 +1,4 @@
-package com.delivery.exception;
+package delivery.exception;
 
 public class NoSuitableRouteException extends RuntimeException {
     public NoSuitableRouteException(String message) {

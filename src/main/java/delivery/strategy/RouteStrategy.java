@@ -1,8 +1,9 @@
-package com.delivery.strategy;
+package delivery.strategy;
 
-import com.delivery.model.DeliveryRequest;
-import com.delivery.model.Route;
-import com.delivery.model.RouteDecision;
+import delivery.model.DeliveryRequest;
+import delivery.model.Route;
+import delivery.model.RouteDecision;
+
 import java.util.List;
 
 public interface RouteStrategy {
